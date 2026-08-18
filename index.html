@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuenta regresiva al cambio de hora</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    font-family:Arial,Helvetica,sans-serif; color:#fff;
+    background:linear-gradient(135deg,#07152b,#123d68,#07152b);
+    padding:20px;
+  }
+  .card{
+    width:min(920px,100%); text-align:center; padding:42px 24px;
+    border:1px solid rgba(255,255,255,.2); border-radius:28px;
+    background:rgba(0,0,0,.25); box-shadow:0 20px 60px rgba(0,0,0,.35);
+    backdrop-filter:blur(8px);
+  }
+  .flag{font-size:42px}
+  h1{font-size:clamp(28px,5vw,52px); margin:10px 0 8px}
+  .subtitle{font-size:clamp(16px,2.5vw,22px); opacity:.9; margin-bottom:28px}
+  .countdown{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  }
+  .unit{
+    background:rgba(255,255,255,.1); border-radius:20px; padding:22px 10px;
+    border:1px solid rgba(255,255,255,.15);
+  }
+  .number{font-size:clamp(34px,7vw,72px); font-weight:800; line-height:1}
+  .label{margin-top:12px; font-size:13px; letter-spacing:2px; opacity:.8}
+  .target{margin-top:30px;font-size:15px;opacity:.75}
+  .done{font-size:clamp(28px,5vw,50px);font-weight:800}
+  @media(max-width:600px){
+    .countdown{grid-template-columns:repeat(2,1fr)}
+    .card{padding:30px 15px}
+  }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="flag">🇨🇱</div>
+  <h1>Cuenta regresiva al cambio de hora</h1>
+  <div class="subtitle">Chile continental · Inicio del domingo 6 de septiembre de 2026</div>
+
+  <section class="countdown" aria-label="Cuenta regresiva">
+    <div class="unit"><div class="number" id="days">00</div><div class="label">DÍAS</div></div>
+    <div class="unit"><div class="number" id="hours">00</div><div class="label">HORAS</div></div>
+    <div class="unit"><div class="number" id="minutes">00</div><div class="label">MINUTOS</div></div>
+    <div class="unit"><div class="number" id="seconds">00</div><div class="label">SEGUNDOS</div></div>
+  </section>
+
+  <div class="target">Objetivo: 06/09/2026 · 00:00:00 (hora de Santiago)</div>
+</main>
+
+<script>
+const target = new Date("2026-09-06T00:00:00-04:00").getTime();
+
+function pad(n){ return String(n).padStart(2,"0"); }
+
+function update(){
+  const now = Date.now();
+  let diff = target - now;
+
+  if(diff <= 0){
+    document.querySelector(".countdown").innerHTML =
+      '<div class="done" style="grid-column:1/-1">¡Llegó el momento del cambio de hora! 🇨🇱</div>';
+    return;
+  }
+
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const days = Math.floor(diff/day); diff %= day;
+  const hours = Math.floor(diff/hour); diff %= hour;
+  const minutes = Math.floor(diff/minute); diff %= minute;
+  const seconds = Math.floor(diff/second);
+
+  document.getElementById("days").textContent = pad(days);
+  document.getElementById("hours").textContent = pad(hours);
+  document.getElementById("minutes").textContent = pad(minutes);
+  document.getElementById("seconds").textContent = pad(seconds);
+}
+
+update();
+setInterval(update,1000);
+</script>
+</body>
+</html>
